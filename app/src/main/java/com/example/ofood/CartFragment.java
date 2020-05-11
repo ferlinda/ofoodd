@@ -44,13 +44,6 @@ public class CartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_cart, container, false);
-        db.collection("Chart").document(userID).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.d(TAG, "onSuccess: " + documentSnapshot.getData().toString());
-                    }
-                });
 
         TextView buttonCheckOut = view.findViewById(R.id.check_out);
         buttonCheckOut.setOnClickListener(new View.OnClickListener() {

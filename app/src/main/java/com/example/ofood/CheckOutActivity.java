@@ -39,7 +39,7 @@ public class CheckOutActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_check_out_activity);
 
-        db.collection("Chart").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("Cart").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
@@ -71,6 +71,24 @@ public class CheckOutActivity extends AppCompatActivity {
                                                 vege.add(entry.getKey());
                                             }
                                         }
+                                        String id = db.collection("UsersData").document(userID).collection("Orders").document().getId();
+                                        Map<String, Object> invoice_stat = new HashMap<>();
+                                        invoice_stat.put("Status", "Check Out");
+                                        db.collection("UsersData").document(userID).collection("Orders").document(id)
+                                                .set(invoice_stat)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d(TAG, "Added to Orders.");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(TAG, "Error adding to Orders! Try again.", e);
+                                                    }
+                                                });
+
                                         int count=0;
                                         int count2=0;
                                         int harga = 0, total = 0;
@@ -78,6 +96,22 @@ public class CheckOutActivity extends AppCompatActivity {
                                             for (String t: vege){
                                                 if(s.equals(t)){
                                                     harga= price.get(count2) * amount.get(count);
+                                                    Map<String, Object> invoice_item = new HashMap<>();
+                                                    invoice_item.put(s, amount.get(count));
+                                                    db.collection("UsersData").document(userID).collection("Orders").document(id)
+                                                            .update(invoice_item)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.d(TAG, "Added to chart.");
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.w(TAG, "Error adding to chart! Try again.", e);
+                                                                }
+                                                            });
                                                 }
                                                 count2+=1;
                                             }
@@ -89,13 +123,14 @@ public class CheckOutActivity extends AppCompatActivity {
                                         Log.d("TAG", String.valueOf(total));
                                         Map<String, Object> item = new HashMap<>();
                                         item.put("Price", total);
-
-                                        db.collection("Chart").document(userID)
-                                                .update(item)
+                                        Map<String, Object> invoice_item = new HashMap<>();
+                                        invoice_item.put("Price", total);
+                                        db.collection("UsersData").document(userID).collection("Orders").document(id)
+                                                .update(invoice_item)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        Log.d(TAG, "Price added to database Chart.");
+                                                        Log.d(TAG, "Added to chart.");
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
@@ -104,44 +139,37 @@ public class CheckOutActivity extends AppCompatActivity {
                                                         Log.w(TAG, "Error adding to chart! Try again.", e);
                                                     }
                                                 });
+                                        Map<String, Object> random = new HashMap<>();
+                                        random.put("New", "0");
+
+                                        db.collection("Cart").document(userID).delete();
+                                        db.collection("Cart").document(userID)
+                                                .set(random)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d(TAG, "Added to cart.");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(TAG, "Error adding to cart! Try again.", e);
+                                                    }
+                                                });
 
 
-
-
-//                                        for (int s: price){
-//                                            Log.d("TAG", String.valueOf(s));
-//                                        }
                                     }
                                 }
                             }
                         });
 
-//
-//
-//                        for (String s: name){
-//                            Log.d("TAG", s);
-//                        }
-//
-//                        for (int s: amount){
-//                            Log.d("TAG", String.valueOf(s));
-//                        }
                     }
                 }
             }
         });
 
 
-
-
-
-
-//        db.collection("Chart").document(userID).get()
-//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        for (DataSnapshot child:)
-//                    }
-//                });
 
     }
 }

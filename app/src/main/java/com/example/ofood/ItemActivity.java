@@ -100,7 +100,7 @@ public class ItemActivity extends AppCompatActivity {
                 Map<String, Object> item = new HashMap<>();
                 item.put(foodName,mItemAmount.getText().toString());
 
-                db.collection("Chart").document(userID)
+                db.collection("Cart").document(userID)
                         .update(item)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -114,6 +114,8 @@ public class ItemActivity extends AppCompatActivity {
                                 Log.w(TAG, "Error adding to chart! Try again.", e);
                             }
                         });
+
+
                 startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
                 finish();
             }
