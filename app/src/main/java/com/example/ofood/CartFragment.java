@@ -56,8 +56,7 @@ public class CartFragment extends Fragment {
         buttonCheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(requireActivity().getApplicationContext(), CheckOutActivity.class));
+                startActivity(new Intent(Objects.requireNonNull(getActivity()).getApplicationContext(), CheckOutActivity.class));
             }
         });
 
