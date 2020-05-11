@@ -58,7 +58,6 @@ public class CartFragment extends Fragment {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(requireActivity().getApplicationContext(), CheckOutActivity.class));
-                getActivity().finish();
             }
         });
 
